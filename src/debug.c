@@ -1479,11 +1479,6 @@ static const u8 sWeatherNames[WEATHER_COUNT][24] = {
     [WEATHER_FOG]                = _("Fog"),
 };
 
-const u8 *GetWeatherName(u32 weatherId)
-{
-    return sWeatherNames[weatherId];
-}
-
 static const u8 sDebugText_WeatherNotDefined[] = _("Not Defined!!!");
 static void DebugAction_Util_Weather(u8 taskId)
 {
