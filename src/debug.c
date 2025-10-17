@@ -1450,6 +1450,41 @@ void CheckROMSize(struct ScriptContext *ctx)
     ConvertQ22_10ToDecimalString(gStringVar2, currROMFreeKB, 2, ROUND_FLOOR);
 }
 
+static void DebugAction_ROMInfo_CheckROMSpace(u8 taskId)
+{
+    Debug_DestroyMenu_Full(taskId);
+    LockPlayerFieldControls();
+    ScriptContext_SetupScript(Debug_CheckROMSpace);
+}
+
+static const u8 sWeatherNames[WEATHER_COUNT][24] = {
+    [WEATHER_NONE]               = _("None"),
+    [WEATHER_SUNNY_CLOUDS]       = _("Sunny Clouds"),
+    [WEATHER_SUNNY]              = _("Sunny"),
+    [WEATHER_RAIN]               = _("Rain"),
+    [WEATHER_SNOW]               = _("Snow"),
+    [WEATHER_RAIN_THUNDERSTORM]  = _("Rain Thunderstorm"),
+    [WEATHER_FOG_HORIZONTAL]     = _("Fog Horizontal"),
+    [WEATHER_VOLCANIC_ASH]       = _("Volcanic Ash"),
+    [WEATHER_SANDSTORM]          = _("Sandstorm"),
+    [WEATHER_FOG_DIAGONAL]       = _("Fog Diagonal"),
+    [WEATHER_UNDERWATER]         = _("Underwater"),
+    [WEATHER_SHADE]              = _("Shade"),
+    [WEATHER_DROUGHT]            = _("Drought"),
+    [WEATHER_DOWNPOUR]           = _("Downpour"),
+    [WEATHER_UNDERWATER_BUBBLES] = _("Underwater Bubbles"),
+    [WEATHER_ABNORMAL]           = _("Abnormal(Not Working)"),
+    [WEATHER_ROUTE119_CYCLE]     = _("Route119 Cycle"),
+    [WEATHER_ROUTE123_CYCLE]     = _("Route123 Cycle"),
+    [WEATHER_FOG]                = _("Fog"),
+};
+
+const u8 *GetWeatherName(u32 weatherId)
+{
+    return sWeatherNames[weatherId];
+}
+
+static const u8 sDebugText_WeatherNotDefined[] = _("Not Defined!!!");
 static void DebugAction_Util_Weather(u8 taskId)
 {
     u8 windowId;
