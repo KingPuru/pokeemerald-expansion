@@ -6448,7 +6448,7 @@ bool32 IsItemSweet(u32 item)
 
 static void PrintEvolutionTargetSpeciesAndMethod(u8 taskId, u16 species, u8 depth, u32 *depth_i, u32 alreadyPrintedIcons[], u32 *icon_depth_i, u32 numLines)
 {
-{
+
     int i;
     u32 depth_x = 4;
     u32 depth_offset = 8 * (depth + 1);
