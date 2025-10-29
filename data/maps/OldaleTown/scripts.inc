@@ -31,33 +31,6 @@ OldaleTown_EventScript_TownSign::
 
 OldaleTown_EventScript_Girl::
 	msgbox OldaleTown_Text_SavingMyProgress, MSGBOX_NPC
-    giveitem ITEM_LEFTOVERS
-	waitmessage
-    closemessage 
-	giveitem ITEM_FIRE_GEM
-	waitmessage
-    closemessage
-	giveitem ITEM_SITRUS_BERRY
-	waitmessage
-    closemessage
-	giveitem ITEM_ASSAULT_VEST
-	waitmessage
-    closemessage
-	giveitem ITEM_WEAKNESS_POLICY
-	waitmessage
-    closemessage
-	giveitem ITEM_RARE_CANDY
-	waitmessage
-    closemessage
-	giveitem ITEM_FULL_RESTORE
-	waitmessage
-    closemessage
-	giveitem ITEM_LIFE_ORB
-	waitmessage
-    closemessage
-	giveitem ITEM_CHOICE_SPECS
-	waitmessage
-    closemessage
 	end
 
 OldaleTown_EventScript_MartEmployee::
