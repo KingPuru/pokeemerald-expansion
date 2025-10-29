@@ -4246,6 +4246,11 @@ static void Cmd_tryfaintmon(void)
             gBattlescriptCurrInstr = faintScript;
             if (IsOnPlayerSide(battler))
             {
+                if (FlagGet(FLAG_NUZLOCKE) && FlagGet(FLAG_SYS_POKEDEX_GET))
+                {
+                    bool8 dead = TRUE;
+                    SetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_DEAD, &dead);
+                }
                 gHitMarker |= HITMARKER_PLAYER_FAINTED;
                 if (gBattleResults.playerFaintCounter < 255)
                     gBattleResults.playerFaintCounter++;
@@ -16138,6 +16143,13 @@ void BS_TryRevivalBlessing(void)
 {
     NATIVE_ARGS(const u8 *failInstr);
     u8 index = GetFirstFaintedPartyIndex(gBattlerAttacker);
+
+    // Move fails if nuzlocke is on
+    if (GetBattlerSide(gBattlerAttacker) == B_SIDE_PLAYER && FlagGet(FLAG_NUZLOCKE))
+    {
+        gBattlescriptCurrInstr = cmd->failInstr;
+        return;
+    }
 
     // Move fails if there are no battlers to revive.
     if (index == PARTY_SIZE)

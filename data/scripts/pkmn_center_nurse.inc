@@ -61,6 +61,12 @@ EventScript_PkmnCenterNurse_CheckTrainerHillAndUnionRoom::
 @ VAR_0x8004 is 1 when player has Gold Card
 EventScript_PkmnCenterNurse_ReturnPkmn::
 	goto_if_eq VAR_0x8004, 1, EventScript_PkmnCenterNurse_ReturnPkmn2
+	goto_if_unset FLAG_NUZLOCKEHC, EventScript_PkmnCenterNurse_ReturnPkmnDefault
+	special LevelCapToString
+	message gText_WeHopeToSeeYouAgain3
+	return
+
+EventScript_PkmnCenterNurse_ReturnPkmnDefault::	
 	message gText_RestoredPkmnToFullHealth
 	waitmessage
 	applymovement VAR_0x800B, Movement_PkmnCenterNurse_Bow

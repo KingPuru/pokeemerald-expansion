@@ -45,6 +45,8 @@
 #include "constants/item_effects.h"
 #include "constants/items.h"
 #include "constants/songs.h"
+#include "battle_setup.h"
+#include "region_map.h"
 
 static void SetUpItemUseCallback(u8);
 static void FieldCB_UseItemOnField(void);
@@ -187,7 +189,9 @@ static void Task_PartyMenuItemUseFromField(u8 taskId)
 
 static void DisplayCannotUseItemMessage(u8 taskId, bool8 isUsingRegisteredKeyItemOnField, const u8 *str)
 {
+
     StringExpandPlaceholders(gStringVar4, str);
+
     if (!isUsingRegisteredKeyItemOnField)
     {
         if (CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE)
@@ -1135,6 +1139,10 @@ static u32 GetBallThrowableState(void)
         return BALL_THROW_UNABLE_SEMI_INVULNERABLE;
     else if (FlagGet(B_FLAG_NO_CATCHING))
         return BALL_THROW_UNABLE_DISABLED_FLAG;
+    else if (gNuzlockeCatchStatus == 1)
+        return BALL_THROW_UNABLE_NUZLOCKE;
+    else if (gNuzlockeCatchStatus == 2)
+        return BALL_THROW_UNABLE_DUPS;    
 
     return BALL_THROW_ABLE;
 }
@@ -1161,7 +1169,7 @@ void ItemUseInBattle_PokeBall(u8 taskId)
         break;
     case BALL_THROW_UNABLE_TWO_MONS:
         if (CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE)
-            DisplayItemMessage(taskId, FONT_NORMAL, sText_CantThrowPokeBall_TwoMons, CloseItemMessage);
+            DisplayItemMessage(taskId,FONT_NORMAL, sText_CantThrowPokeBall_TwoMons, CloseItemMessage);
         else
             DisplayItemMessageInBattlePyramid(taskId, sText_CantThrowPokeBall_TwoMons, Task_CloseBattlePyramidBagMessage);
         break;
@@ -1182,6 +1190,18 @@ void ItemUseInBattle_PokeBall(u8 taskId)
             DisplayItemMessage(taskId, FONT_NORMAL, sText_CantThrowPokeBall_Disabled, CloseItemMessage);
         else
             DisplayItemMessageInBattlePyramid(taskId, sText_CantThrowPokeBall_Disabled, Task_CloseBattlePyramidBagMessage);
+        break;
+    case BALL_THROW_UNABLE_NUZLOCKE:
+        if (CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE)
+            DisplayItemMessage(taskId, FONT_NORMAL, gText_BallsCannotBeUsedNuz, CloseItemMessage);
+        else
+            DisplayItemMessageInBattlePyramid(taskId, gText_BallsCannotBeUsedNuz, Task_CloseBattlePyramidBagMessage);
+        break;
+    case BALL_THROW_UNABLE_DUPS:
+        if (CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE)
+            DisplayItemMessage(taskId, FONT_NORMAL, gText_BallsCannotBeUsedDups, CloseItemMessage);
+        else
+            DisplayItemMessageInBattlePyramid(taskId, gText_BallsCannotBeUsedDups, Task_CloseBattlePyramidBagMessage);
         break;
     }
 }
@@ -1288,6 +1308,14 @@ bool32 CannotUseItemsInBattle(u16 itemId, struct Pokemon *mon)
             failStr = sText_CantThrowPokeBall_Disabled;
             cannotUse = TRUE;
             break;
+        case BALL_THROW_UNABLE_NUZLOCKE:
+            failStr = gText_BallsCannotBeUsedNuz;
+            cannotUse = TRUE;
+            break;
+        case BALL_THROW_UNABLE_DUPS:
+            failStr = gText_BallsCannotBeUsedDups;
+            cannotUse = TRUE;
+            break;
         }
         break;
     case EFFECT_ITEM_INCREASE_ALL_STATS:
@@ -1316,7 +1344,7 @@ bool32 CannotUseItemsInBattle(u16 itemId, struct Pokemon *mon)
             cannotUse = TRUE;
         break;
     case EFFECT_ITEM_REVIVE:
-        if (hp != 0)
+        if (hp != 0 || FlagGet(FLAG_NUZLOCKE))
             cannotUse = TRUE;
         break;
     case EFFECT_ITEM_RESTORE_PP:
@@ -1336,7 +1364,7 @@ bool32 CannotUseItemsInBattle(u16 itemId, struct Pokemon *mon)
         }
         break;
     }
-
+    
     if (failStr != NULL)
         StringExpandPlaceholders(gStringVar4, failStr);
     else

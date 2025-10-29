@@ -3002,7 +3002,7 @@ static void ClearSetBScriptingStruct(void)
     memset(&gBattleScripting, 0, sizeof(gBattleScripting));
 
     gBattleScripting.windowsType = temp;
-    gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
+    gBattleScripting.battleStyle = (gSaveBlock2Ptr->optionsBattleStyle || FlagGet(FLAG_NUZLOCKEHC));
     gBattleScripting.expOnCatch = (B_EXP_CATCH >= GEN_6);
     gBattleScripting.specialTrainerBattleType = specialBattleType;
 }
@@ -3671,6 +3671,27 @@ static void DoBattleIntro(void)
         if (!IsBattlerMarkedForControllerExec(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)))
             gBattleStruct->introState++;
         break;
+    case BATTLE_INTRO_STATE_NUZLOCKE_DUPS_TEXT:
+        if (!(gBattleControllerExecFlags & BATTLE_TYPE_TRAINER))
+        {
+            if (FlagGet(FLAG_NUZLOCKE))
+            {
+                if (gNuzlockeCatchStatus == 3)  // If Pokemon is shiny
+                {
+                    PrepareStringBattle(STRINGID_NUZLOCKESHINY, GetBattlerAtPosition(B_POSITION_PLAYER_LEFT));
+                }
+                else if (gNuzlockeCatchStatus == 2 && !(FlagGet(FLAG_NUZLOCKEHC))) // If Pokemon is Dupe
+                {
+                    PrepareStringBattle(STRINGID_NUZLOCKEDUPS, GetBattlerAtPosition(B_POSITION_PLAYER_LEFT));
+                }
+            }
+            gBattleStruct->introState++;
+        }
+        else
+        {
+            gBattleStruct->introState++;
+        }
+        break;
     case BATTLE_INTRO_STATE_PRINT_PLAYER_SEND_OUT_TEXT:
         if (!(gBattleTypeFlags & BATTLE_TYPE_SAFARI))
         {
@@ -3759,6 +3780,19 @@ static void DoBattleIntro(void)
             gBattleMainFunc = TryDoEventsBeforeFirstTurn;
         }
         break;
+    }
+}
+
+
+static void BattleLostNuzlocke(void)
+{
+    if (gBattleControllerExecFlags == 0)
+    {
+        gBattleMainFunc = HandleEndTurn_FinishBattle;
+        PrepareStringBattle(STRINGID_NUZLOCKELOST, GetBattlerAtPosition(B_POSITION_PLAYER_LEFT));
+        FlagClear(FLAG_NUZLOCKE);
+        FlagClear(FLAG_NUZLOCKEHC);
+        FlagClear(FLAG_NUZLOCKEBAN);
     }
 }
 
@@ -4779,7 +4813,10 @@ u32 GetBattlerTotalSpeedStatArgs(u32 battler, u32 ability, enum ItemHoldEffect h
     else if (holdEffect == HOLD_EFFECT_IRON_BALL)
         speed /= 2;
     else if (holdEffect == HOLD_EFFECT_CHOICE_SCARF && GetActiveGimmick(battler) != GIMMICK_DYNAMAX)
-        speed = (speed * 150) / 100;
+    {
+        if (!(GetBattlerSide(battler) == B_SIDE_PLAYER && FlagGet(FLAG_NUZLOCKEBAN)))
+            speed = (speed * 150) / 100;
+    }
     else if (holdEffect == HOLD_EFFECT_QUICK_POWDER && gBattleMons[battler].species == SPECIES_DITTO && !(gBattleMons[battler].volatiles.transformed))
         speed *= 2;
 
@@ -5486,6 +5523,11 @@ static void HandleEndTurn_BattleLost(void)
     else
     {
         gBattlescriptCurrInstr = BattleScript_LocalBattleLost;
+        if (FlagGet(FLAG_NUZLOCKE) && FlagGet(FLAG_SYS_POKEDEX_GET))
+        {
+            gBattleMainFunc = BattleLostNuzlocke;
+            return;
+        }
     }
 
     gBattleMainFunc = HandleEndTurn_FinishBattle;
@@ -5543,6 +5585,7 @@ static void HandleEndTurn_MonFled(void)
 static void HandleEndTurn_FinishBattle(void)
 {
     u32 i, battler;
+    gNuzlockeCatchStatus = 0;  // While not necessary, resetting this is nice to stay deterministic
 
     if (gCurrentActionFuncId == B_ACTION_TRY_FINISH || gCurrentActionFuncId == B_ACTION_FINISHED)
     {
@@ -6119,7 +6162,8 @@ void SetTypeBeforeUsingMove(u32 move, u32 battler)
         && GetBattleMoveType(move) == GetItemSecondaryId(heldItem)
         && effect != EFFECT_PLEDGE
         && effect != EFFECT_OHKO
-        && effect != EFFECT_SHEER_COLD)
+        && effect != EFFECT_SHEER_COLD
+        && !(FlagGet(FLAG_NUZLOCKEBAN) && GetBattlerSide(battler) == B_SIDE_PLAYER))
     {
         gSpecialStatuses[battler].gemParam = GetBattlerHoldEffectParam(battler);
         gSpecialStatuses[battler].gemBoost = TRUE;

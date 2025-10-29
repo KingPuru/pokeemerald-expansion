@@ -35,6 +35,16 @@ gText_Birch_BoyOrGirl::
 	.string "Are you a boy?\n"
 	.string "Or are you a girl?$"
 
+gText_Birch_Nuzlocke::
+	.string "Would you like to perform the\n"
+	.string "Nuzlocke challenge?$"
+
+gText_Birch_NuzlockeHC::
+	.string "Do you want to make it hardcore?\n"
+	.string "(hard level caps / no dupe clause\p" 
+	.string "forced set mode / no battle items\n"
+	.string " / some held items are banned)$"
+
 gText_Birch_WhatsYourName::
 	.string "All right.\n"
 	.string "What's your name?$"

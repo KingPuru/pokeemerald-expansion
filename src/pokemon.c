@@ -1778,6 +1778,11 @@ void BoxMonToMon(const struct BoxPokemon *src, struct Pokemon *dest)
     CalculateMonStats(dest);
     value = GetMonData(dest, MON_DATA_MAX_HP) - value;
     SetMonData(dest, MON_DATA_HP, &value);
+    if (GetMonData(dest, MON_DATA_DEAD) && FlagGet(FLAG_NUZLOCKE))
+    {
+        value = 0;
+        SetMonData(dest, MON_DATA_HP, &value);
+    }    
 }
 
 u8 GetLevelFromMonExp(struct Pokemon *mon)
@@ -2775,6 +2780,9 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
         case MON_DATA_LANGUAGE:
             retVal = boxMon->language;
             break;
+        case MON_DATA_DEAD:
+            retVal = boxMon->dead;
+            break;
         case MON_DATA_SANITY_IS_BAD_EGG:
             retVal = boxMon->isBadEgg;
             break;
@@ -3191,6 +3199,9 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
             break;
         case MON_DATA_LANGUAGE:
             SET8(boxMon->language);
+            break;
+        case MON_DATA_DEAD:
+            SET8(boxMon->dead);
             break;
         case MON_DATA_SANITY_IS_BAD_EGG:
             SET8(boxMon->isBadEgg);
@@ -3946,7 +3957,8 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                         u32 maxHP = GetMonData(mon, MON_DATA_MAX_HP, NULL);
                         // Check use validity.
                         if ((effectFlags & (ITEM4_REVIVE >> 2) && currentHP != 0)
-                              || (!(effectFlags & (ITEM4_REVIVE >> 2)) && currentHP == 0))
+                              || (!(effectFlags & (ITEM4_REVIVE >> 2)) && currentHP == 0)
+                              || (GetMonData(mon, MON_DATA_DEAD) && FlagGet(FLAG_NUZLOCKE)))
                         {
                             itemEffectParam++;
                             break;

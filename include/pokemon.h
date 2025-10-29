@@ -15,12 +15,13 @@
 #define GET_BASE_SPECIES_ID(speciesId) (GetFormSpeciesId(speciesId, 0))
 #define FORM_SPECIES_END (0xffff)
 
-// Property labels for Get(Box)MonData / Set(Box)MonData
+// Property labels for Get(Box)MonData / Set(Box)MonData (Order matters here!)
 enum MonData {
     MON_DATA_PERSONALITY,
     MON_DATA_STATUS,
     MON_DATA_OT_ID,
     MON_DATA_LANGUAGE,
+    MON_DATA_DEAD,
     MON_DATA_SANITY_IS_BAD_EGG,
     MON_DATA_SANITY_HAS_SPECIES,
     MON_DATA_SANITY_IS_EGG,
@@ -261,7 +262,7 @@ struct BoxPokemon
     u8 isEgg:1;
     u8 blockBoxRS:1; // Unused, but Pokémon Box Ruby & Sapphire will refuse to deposit a Pokémon with this flag set.
     u8 daysSinceFormChange:3; // 7 days.
-    u8 unused_13:1;
+    u8 dead:1; // For Nuzlocke
     u8 otName[PLAYER_NAME_LENGTH];
     u8 markings:4;
     u8 compressedStatus:4;
