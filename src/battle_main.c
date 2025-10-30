@@ -3672,7 +3672,7 @@ static void DoBattleIntro(void)
             gBattleStruct->introState++;
         break;
     case BATTLE_INTRO_STATE_NUZLOCKE_DUPS_TEXT:
-        if (!(gBattleControllerExecFlags & BATTLE_TYPE_TRAINER))
+        if (!(gBattleTypeFlags & BATTLE_TYPE_TRAINER) && !(gBattleControllerExecFlags))
         {
             if (FlagGet(FLAG_NUZLOCKE))
             {

@@ -40,10 +40,8 @@ gText_Birch_Nuzlocke::
 	.string "Nuzlocke challenge?$"
 
 gText_Birch_NuzlockeHC::
-	.string "Do you want to make it hardcore?\n"
-	.string "(hard level caps / no dupe clause\p" 
-	.string "forced set mode / no battle items\n"
-	.string " / some held items are banned)$"
+	.string "Do you want to make it\n"
+	.string "hardcore?$"
 
 gText_Birch_WhatsYourName::
 	.string "All right.\n"
