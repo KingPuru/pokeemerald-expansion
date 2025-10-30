@@ -6251,9 +6251,6 @@ static u8 ItemEffectMoveEnd(u32 battler, enum ItemHoldEffect holdEffect)
 {
     u8 effect = 0;
 
-    if (GetBattlerSide(battler) == B_SIDE_PLAYER && FlagGet(FLAG_NUZLOCKEBAN))
-        return ITEM_NO_EFFECT;
-
     switch (holdEffect)
     {
     case HOLD_EFFECT_MICLE_BERRY:
