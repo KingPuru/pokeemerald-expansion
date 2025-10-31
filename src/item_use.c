@@ -1130,6 +1130,7 @@ void ItemUseOutOfBattle_EvolutionStone(u8 taskId)
 
 static u32 GetBallThrowableState(void)
 {
+
     if (IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT))
      && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)))
         return BALL_THROW_UNABLE_TWO_MONS;
@@ -1142,7 +1143,22 @@ static u32 GetBallThrowableState(void)
     else if (gNuzlockeCatchStatus == 1)
         return BALL_THROW_UNABLE_NUZLOCKE;
     else if (gNuzlockeCatchStatus == 2)
-        return BALL_THROW_UNABLE_DUPS;    
+        return BALL_THROW_UNABLE_DUPS;  
+    
+    if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && !(gBattleTypeFlags & BATTLE_TYPE_TRAINER) && FlagGet(FLAG_NUZLOCKE))
+    {
+        u8 battlerLeft  = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+        u8 battlerRight = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+
+        if ((IsBattlerAlive(battlerLeft)  && IsMonShiny(&gEnemyParty[gBattlerPartyIndexes[battlerLeft]])) || (IsBattlerAlive(battlerRight) && IsMonShiny(&gEnemyParty[gBattlerPartyIndexes[battlerRight]])))
+        {
+            return BALL_THROW_ABLE;
+        }
+        else
+        {
+            return BALL_THROW_UNABLE_NUZLOCKE;
+        }
+    }
 
     return BALL_THROW_ABLE;
 }

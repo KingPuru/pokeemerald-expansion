@@ -3676,11 +3676,11 @@ static void DoBattleIntro(void)
         {
             if (FlagGet(FLAG_NUZLOCKE))
             {
-                if (gNuzlockeCatchStatus == 3)  // If Pokemon is shiny
+                if (gNuzlockeCatchStatus == 3) 
                 {
                     PrepareStringBattle(STRINGID_NUZLOCKESHINY, GetBattlerAtPosition(B_POSITION_PLAYER_LEFT));
                 }
-                else if (gNuzlockeCatchStatus == 2 && !(FlagGet(FLAG_NUZLOCKEHC))) // If Pokemon is Dupe
+                else if (gNuzlockeCatchStatus == 2 && !(FlagGet(FLAG_NUZLOCKEHC)))
                 {
                     PrepareStringBattle(STRINGID_NUZLOCKEDUPS, GetBattlerAtPosition(B_POSITION_PLAYER_LEFT));
                 }
@@ -5585,7 +5585,7 @@ static void HandleEndTurn_MonFled(void)
 static void HandleEndTurn_FinishBattle(void)
 {
     u32 i, battler;
-    gNuzlockeCatchStatus = 0;  // While not necessary, resetting this is nice to stay deterministic
+    gNuzlockeCatchStatus = 0;
 
     if (gCurrentActionFuncId == B_ACTION_TRY_FINISH || gCurrentActionFuncId == B_ACTION_FINISHED)
     {

@@ -24,6 +24,7 @@
 #include "constants/items.h"
 #include "constants/layouts.h"
 #include "constants/weather.h"
+#include "battle_setup.h"
 
 extern const u8 EventScript_SprayWoreOff[];
 
@@ -1228,6 +1229,13 @@ static void ApplyCleanseTagEncounterRateMod(u32 *encRate)
 
 bool8 TryDoDoubleWildBattle(void)
 {
+    if (FlagGet(FLAG_NUZLOCKE))
+    {
+        if (HasWildPokmnOnThisRouteBeenSeen(GetCurrentRegionMapSectionId(), FALSE) == 0)
+        {
+            return FALSE;
+        }
+    }
     if (GetSafariZoneFlag()
       || (B_DOUBLE_WILD_REQUIRE_2_MONS == TRUE && GetMonsStateToDoubles() != PLAYER_HAS_TWO_USABLE_MONS))
         return FALSE;

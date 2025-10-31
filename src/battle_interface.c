@@ -1791,12 +1791,15 @@ static void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus)
         return;
 
     healthBarSpriteId = gSprites[healthboxSpriteId].hMain_HealthBarSpriteId;
+    
 
     if (noStatus)
     {
+        u8 battlerLeft  = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+        u8 battlerRight = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
         if(GetSetPokedexFlag(SpeciesToNationalPokedexNum(GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES)), FLAG_GET_CAUGHT))
             CpuCopy32(GetHealthboxElementGfxPtr(HEALTHBOX_GFX_STATUS_BALL_CAUGHT), (void *)(OBJ_VRAM0 + (gSprites[healthBarSpriteId].oam.tileNum + 8) * TILE_SIZE_4BPP), 32);
-        else if(!(gNuzlockeCatchStatus && gNuzlockeCatchStatus != 3) && FlagGet(FLAG_NUZLOCKE) && FlagGet(FLAG_SYS_POKEDEX_GET))
+        else if(!(gNuzlockeCatchStatus && gNuzlockeCatchStatus != 3) && FlagGet(FLAG_NUZLOCKE) && FlagGet(FLAG_SYS_POKEDEX_GET) && (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE) || (IsBattlerAlive(battlerLeft)  && IsMonShiny(&gEnemyParty[gBattlerPartyIndexes[battlerLeft]])) || (IsBattlerAlive(battlerRight) && IsMonShiny(&gEnemyParty[gBattlerPartyIndexes[battlerRight]]))))
             CpuCopy32(gNuzlockeCatchableIndicator, (void*)(OBJ_VRAM0 + (gSprites[healthBarSpriteId].oam.tileNum + 8) * TILE_SIZE_4BPP), 32);
     }
     else

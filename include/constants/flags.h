@@ -1225,7 +1225,6 @@
 #define FLAG_NUZLOCKE                                               0x493 // Unused Flag
 #define FLAG_NUZLOCKEHC                                             0x494 // Unused Flag
 #define FLAG_NUZLOCKEBAN                                            0x495 // Unused Flag
-#define FLAG_UNUSED_0x498                                           0x498 // Unused Flag
 #define FLAG_UNUSED_0x499                                           0x499 // Unused Flag
 #define FLAG_UNUSED_0x49A                                           0x49A // Unused Flag
 #define FLAG_UNUSED_0x49B                                           0x49B // Unused Flag

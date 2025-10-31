@@ -313,7 +313,16 @@ static void CreateBattleStartTask_Debug(u8 transition, u16 song)
 
 void BattleSetup_StartWildBattle(void)
 {
-    gNuzlockeCatchStatus = HasWildPokmnOnThisRouteBeenSeen(GetCurrentRegionMapSectionId(), TRUE);
+    gNuzlockeCatchStatus = 0;
+    if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && !(gBattleTypeFlags & BATTLE_TYPE_TRAINER))
+    {
+        gNuzlockeCatchStatus = 1;
+    }
+    else
+    {
+        gNuzlockeCatchStatus = HasWildPokmnOnThisRouteBeenSeen(GetCurrentRegionMapSectionId(), TRUE);
+    }
+
     if (GetSafariZoneFlag())
         DoSafariBattle();
     else
